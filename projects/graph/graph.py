@@ -98,7 +98,6 @@ class Graph:
         while qq.size() > 0:
             path = qq.dequeue()
             if path[-1] not in visited:
-                print(path[-1])
                 visited.add(path[-1])
                 for next_vert in self.get_neighbors(path[-1]):
                     new_path = list(path)
@@ -113,9 +112,21 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        ss = Stack()
+        ss.push([starting_vertex])
+        visited = set()
+        while ss.size() > 0:
+            path = ss.pop()
+            if path[-1] not in visited:
+                visited.add(path[-1])
+                for next_vert in self.get_neighbors(path[-1]):
+                    new_path = list(path)
+                    new_path.append(next_vert)
+                    if next_vert == destination_vertex:
+                        return new_path
+                    ss.push(new_path)
 
-    def dfs_recursive(self, starting_vertex, destination_vertex):
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited=None, path=None):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -123,7 +134,20 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        if visited is None:
+            visited = {starting_vertex}
+        if path is None:
+            path = [starting_vertex]
+
+        for next_vertex in self.get_neighbors(starting_vertex):
+            if not next_vertex in visited:
+                visited.add(next_vertex)
+                new_path = path + [next_vertex]
+                if next_vertex == destination_vertex:
+                    return new_path
+                solution_path = self.dfs_recursive(next_vertex, destination_vertex, visited, new_path)
+                if solution_path is not None:
+                    return solution_path
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
