@@ -1,3 +1,9 @@
+import random
+
+import sys
+sys.path.insert(1, "../graph")
+from util import Queue
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -45,8 +51,21 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(num_users):
+            self.add_user(f"User {i + 1}")
 
         # Create friendships
+        possible_friendships = []
+
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+
+        random.shuffle(possible_friendships)
+
+        for i in range(num_users * avg_friendships // 2):
+            friendship = possible_friendships[i]
+            self.add_friendship(friendship[0], friendship[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -58,7 +77,16 @@ class SocialGraph:
         The key is the friend's ID and the value is the path.
         """
         visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
+        qq = Queue()
+        qq.enqueue([user_id])
+        while qq.size() > 0:
+            path = qq.dequeue()
+            if path[-1] not in visited:
+                visited[path[-1]] = path
+                for next_user in self.friendships[path[-1]]:
+                    new_path = path + [next_user]
+                    qq.enqueue(new_path)
+
         return visited
 
 
